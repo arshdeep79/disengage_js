@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+  <style>
+    .label{
+      display: inline-block;
+      font-size: 1.5em;
+      margin: 5px;
+    }
+    #loader{
+      display: none;
+    }
+  </style>
+  <script type='text/javascript' src="disengage.js"></script>
+  <script type='text/javascript' src="files/page.js"></script>
+  <script type='text/javascript' src="files/throttle.js"></script>
+</head>
+
+<body>
+  <div class='container'>
+    <hr />
+    <div class='row'>
+      <div class="col-md-10">
+        <input class='form-control input-lg' type='text' id="search" placeholder='Search Names'/>
+      </div>
+      <div class="col-md-2">
+        <select class='form-control' id="names_count"  >
+          <option value='100'>100 Names</option>
+          <option value='500'>500 Names</option>
+          <option value='1000'>1000 Names</option>
+          <option value='5000'>5000 Names</option>
+          <option value='10000'>10000 Names</option>
+          <option value='20000'>20000 Names</option>
+          <option value='30000'>30000 Names</option>
+          <option value='50000'>50000 Names</option>
+          <option value='50000'>50000 Names</option>
+        </select>
+      </div>
+    </div> 
+    <h3 class='text-center' id='loader' > Working . . .</h3>
+    <hr />
+    <div id='names' class='text-center'></div>
+  </div>
+  
+  <script>
+    function loading_show(){
+      document.getElementById('search').disabled = true;
+    }
+    function loading_kill(){
+      document.getElementById('search').disabled = false;
+    }
+      
+    
+    var de = new disengage({delay:1,chunk_size:50});
+    throttle(document.getElementById('search'),'onkeyup',function(el){
+      var query = el.value;
+      de.clearJobs();
+      [].forEach.call(
+        document.querySelectorAll('.name'), 
+        function(el){
+          de.addJob(function(el,q){
+            console.clear();
+            if(el.innerHTML.toLowerCase().indexOf(query.toLowerCase()) == -1)
+              el.style.display = 'none';
+            else
+              el.style.display = '';      
+            console.log('Working');
+          },[el,query]);
+        }
+      );
+      //loading_show();
+      de.doJobs();//loading_kill);
+    });
+  </script>
+</body>
+</html>
