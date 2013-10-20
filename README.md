@@ -3,8 +3,7 @@ Disengage.js
 Disengage.js makes your heavy duty JS loops asynchronous. Eliminates   
 **Unresponsive script error**.
 
-[Demo (Manipulating thousands of DOM nodes without jamming browser)](https://rawgith
-ub.com/arshdeep79/disengage_js/master/index.html)
+[Demo (Manipulating thousands of DOM nodes without jamming browser)](https://rawgithub.com/arshdeep79/disengage_js/master/index.html)
 ###Example
 ```
 /**
