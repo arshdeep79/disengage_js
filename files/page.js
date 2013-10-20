@@ -9,6 +9,13 @@
   var de = new disengage({
     chunk_size  : 50
   });
+  function loading_show(){
+    document.getElementById('search').disabled = true;
+  }
+  function loading_kill(){
+    document.getElementById('search').disabled = false;
+  }
+    
   var wrapper = 0;
   window.onload = function(){
     wrapper = document.getElementById('names');
@@ -22,7 +29,7 @@
     wrapper.innerHTML = '';
     total_names = dropdown.value;
     for(var c=1 ; c<=total_names ; c++)
-      de.addJob(function(){
+      de.add_job(function(){
         var random_name = document.createTextNode(
                             names.first_names[Math.floor((Math.random()*names.first_names.length)+1)-1]+' '+
                             names.last_names[Math.floor((Math.random()*names.last_names.length)+1)-1]); 
@@ -34,6 +41,6 @@
         wrapper.appendChild(label);
       });
     loading_show();
-    de.doJobs(loading_kill);
+    de.execute(loading_kill);
   };
 })();

@@ -35,50 +35,40 @@
       <div class="col-md-2">
         <select class='form-control' id="names_count"  >
           <option value='100'>100 Names</option>
-          <option value='500'>500 Names</option>
+          <option value='500' selected>500 Names</option>
           <option value='1000'>1000 Names</option>
           <option value='5000'>5000 Names</option>
           <option value='10000'>10000 Names</option>
-          <option value='20000'>20000 Names</option>
-          <option value='30000'>30000 Names</option>
-          <option value='50000'>50000 Names</option>
-          <option value='50000'>50000 Names</option>
         </select>
       </div>
     </div> 
-    <h3 class='text-center' id='loader' > Working . . .</h3>
     <hr />
     <div id='names' class='text-center'></div>
   </div>
   
   <script>
-    function loading_show(){
-      document.getElementById('search').disabled = true;
-    }
-    function loading_kill(){
-      document.getElementById('search').disabled = false;
-    }
-      
+    var de = new disengage({
+    /** Execute 50 iterations every 1 ms */
+      delay:1,
+      chunk_size:50
+    });
     
-    var de = new disengage({delay:1,chunk_size:50});
     throttle(document.getElementById('search'),'onkeyup',function(el){
       var query = el.value;
-      de.clearJobs();
+      de.clear_jobs();
       [].forEach.call(
         document.querySelectorAll('.name'), 
         function(el){
-          de.addJob(function(el,q){
-            console.clear();
-            if(el.innerHTML.toLowerCase().indexOf(query.toLowerCase()) == -1)
-              el.style.display = 'none';
-            else
-              el.style.display = '';      
-            console.log('Working');
+          de.add_job(function(el,q){
+            el.style.display = (el.innerHTML.toLowerCase().indexOf(query.toLowerCase()) == -1)
+                                ?'none'
+                                :'';
           },[el,query]);
         }
       );
-      //loading_show();
-      de.doJobs();//loading_kill);
+      de.execute(function(){
+        console.log('finished searching');
+      });
     });
   </script>
 </body>

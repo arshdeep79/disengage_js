@@ -1,37 +1,61 @@
+/**
+ * @author Arshdeep Giri <arshdeep79@gmail.com>
+ */
+
 function disengage(in_options){
   var self = this;
-  this.options = {
+  this._running = false;
+  
+  this._options = {
     delay       : 1,
     chunk_size  : 1
   };
-  this.jobs = [];
+  this._jobs = [];
   
   if(in_options !== undefined)
-    for (var opt in this.options)
+    for (var opt in this._options)
       if(in_options[opt] !== undefined)
-        this.options[opt] = in_options[opt];
+        this._options[opt] = in_options[opt];
   
-  this.addJob = function(func,vars){
-    self.jobs.push({
+  this._do_jobs = function(on_finish_callback){
+    for(var i=0 ; i<self._options.chunk_size ; i++){
+      var job = self._jobs.shift();
+      if(job  === undefined) {
+        if(on_finish_callback !== undefined)
+          on_finish_callback();
+          
+        self._running = false; 
+        return;
+      }
+      job.func.apply(this,job.vars);
+    }
+    setTimeout(function(){self._do_jobs(on_finish_callback);},self._options.delay);
+  };
+  
+  /**
+   * Add new job to process
+   */
+  this.add_job = function(func,vars){
+    self._jobs.push({
       func:func,
       vars:vars?vars:[]
     });
   };
   
-  this.clearJobs = function(){
-    this.jobs = [];
+  /**
+   * Remove all stored jobs
+   */
+  this.clear_jobs = function(){
+    self._jobs.length = 0;
   };
-  this.doJobs = function(onFinish){
-    for(var i=0 ; i<self.options.chunk_size ; i++){
-      var job = self.jobs.shift();
-      if(typeof job  == 'undefined') {
-        if(typeof onFinish != 'undefined')
-          onFinish();
-        return;
-      }
-      job.func.apply(this,job.vars);
-    }
-    
-    setTimeout(function(){self.doJobs(onFinish);},self.options.delay);
+  
+  /**
+   * Start executing jobs
+   */
+  this.execute = function(on_finish_callback){
+    if(self._running) 
+      return;
+    self._running = true;
+    self._do_jobs(on_finish_callback);
   };
 }
